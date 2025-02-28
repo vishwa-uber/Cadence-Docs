@@ -144,6 +144,15 @@ const sidebars: SidebarsConfig = {
       ],
     },
     {
+      label: 'Releases',
+      type: 'category',
+      items: [
+        { type: 'doc', 'id': 'releases/cadence', label: 'Cadence Service' },
+        { type: 'doc', 'id': 'releases/cadence-go-client', label: 'Cadence Go Client' },
+        { type: 'doc', 'id': 'releases/cadence-java-client', label: 'Cadence Java Client' },
+      ],
+    },
+    {
       label: 'About',
       type: 'category',
       items: [
