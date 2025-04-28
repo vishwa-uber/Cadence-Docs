@@ -22,7 +22,7 @@ Download the Cadence docker-compose file:
 
 Clone the repo
 ```bash
-git clone https://github.com/cadence-workflow/Cadence-Docs.git
+git clone https://github.com/cadence-workflow/cadence.git
 ```
 Then start Cadence Service by running:
 Run docker-compose in docker folder
