@@ -25,7 +25,6 @@ Clone the repo
 git clone https://github.com/cadence-workflow/cadence.git
 ```
 Then start Cadence Service by running:
-Run docker-compose in docker folder
 ```bash
 cd docker && docker-compose up
 ```
