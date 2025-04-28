@@ -25,7 +25,7 @@ curl -O https://raw.githubusercontent.com/cadence-workflow/cadence/master/docker
 ```
 Then start Cadence Service by running:
 ```bash
-docker-compose up
+git clone .. && cd docker && docker-compose up
 ```
 Please keep this process running at background.
 
