@@ -26,7 +26,7 @@ git clone https://github.com/cadence-workflow/cadence.git
 ```
 Then start Cadence Service by running:
 ```bash
-cd docker && docker-compose up
+cd cadence/docker && docker-compose up
 ```
 Please keep this process running at background.
 
