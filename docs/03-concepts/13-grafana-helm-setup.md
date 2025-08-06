@@ -27,20 +27,14 @@ Before proceeding, ensure the following:
 <details>
 <summary><h2>Setup Steps</h2></summary>
 
-### Step 1: Create a Namespace (Optional, but recommended)
-
-```bash
-kubectl create namespace <namespace>
-```
-
-### Step 2: Add Cadence Helm Repository
+### Step 1: Add Cadence Helm Repository
 
 ```bash
 helm repo add cadence-workflow https://cadenceworkflow.github.io/cadence-charts
 helm repo update
 ```
 
-### Step 3: Deploy Prometheus Operator
+### Step 2: Deploy Prometheus Operator
 
 ```bash
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
@@ -48,7 +42,7 @@ helm install prometheus-operator prometheus-community/kube-prometheus-stack \
   --namespace monitoring --create-namespace
 ```
 
-### Step 4: Deploy Cadence with ServiceMonitor
+### Step 3: Deploy Cadence with ServiceMonitor
 
 Create a `values.yaml` file to enable ServiceMonitor for automatic metrics scraping:
 
@@ -88,7 +82,7 @@ helm install cadence cadence-workflow/cadence \
 
 **Note:** Update the `namespace`, `matchNames`, and `release` values to match your Prometheus deployment.
 
-### Step 5: Access Grafana
+### Step 4: Access Grafana
 
 Get Grafana admin password:
 ```bash
@@ -103,11 +97,16 @@ kubectl port-forward --namespace monitoring svc/prometheus-operator-grafana 3000
 
 Open http://localhost:3000 (admin/password from above)
 
-### Step 6: Import Cadence Dashboards
+### Step 5: Import Cadence Dashboards
 
-1. Download dashboards from [Cadence Charts Examples](https://github.com/cadence-workflow/cadence-charts/tree/main/examples/grafana#-download-and-customize-cadence-grafana-dashboard-json)
-2. In Grafana: **+** → **Import** → Upload JSON files
-3. Select **Prometheus** as data source when prompted
+1. **Download the Cadence Grafana Dashboard JSON:**
+```bash
+curl https://raw.githubusercontent.com/cadence-workflow/cadence/refs/heads/master/docker/grafana/provisioning/dashboards/cadence-server.json -o cadence-server.json
+```
+
+2. **Import in Grafana:** **Dashboards** → **Import** → Upload JSON files
+3. **Select Prometheus** as data source when prompted
+4. Try the same steps for other dashboards
 
 </details>
 
