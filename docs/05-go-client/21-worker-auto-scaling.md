@@ -33,6 +33,8 @@ worker.Options{
 }
 ```
 
+>📚 **Interactive Learning Sample**: Try our [AutoScaler sample implementation](https://github.com/cadence-workflow/cadence-samples/tree/master/cmd/samples/advanced/autoscaling-monitoring) with built-in load generation, real-time metrics collection, and monitoring dashboards. Perfect for understanding how AutoScaler responds to different workload patterns and visualizing poller state changes in real-time.
+
 >⚠️ **Note:** If enabled, the AutoScaler will ignore these options:
 ```go
 worker.Options{
@@ -66,7 +68,7 @@ worker.Options{
 
 One of the most common production issues with Cadence workers occurs when compute autoscalers incorrectly scale down worker instances due to low CPU utilization. This creates a deceptive situation where workers appear to be underutilized from a resource perspective, but are actually performing critical work.
 
-Here's what typically happens: Cadence workers spend most of their time polling the Cadence service for tasks. This polling activity is lightweight and doesn't consume significant CPU resources, leading to consistently low CPU usage metrics (often 5-15%). Compute autoscalers like Kubernetes HPA (Horizontal Pod Autoscaler) or cloud provider autoscaling groups see these low CPU numbers and interpret them as a signal that fewer worker instances are needed.
+Here's what typically happens: Cadence workers spend most of their time polling the Cadence service for tasks. This polling activity is lightweight and doesn't consume significant CPU resources, leading to consistently low CPU usage metrics (often 5-15%). Compute autoscalers like Kubernetes HPA (Horizontal Pod Autoscaler) or cloud provider autoscaling groups see these low CPU numbers and interpret them as signals that fewer worker instances are needed.
 
 When the autoscaler reduces the number of worker instances, several problems emerge:
 - **Reduced polling capacity**: Fewer workers means fewer pollers actively checking for new tasks, which can delay task processing
@@ -94,6 +96,17 @@ When AutoScaler detects that workers are genuinely underutilized (based on Caden
 
 This approach prevents the common scenario where compute autoscalers scale down workers that appear idle but are actually critical for maintaining workflow performance. AutoScaler provides a more accurate representation of worker utilization that can be used to make better scaling decisions at both the worker configuration level and the compute infrastructure level.
 
+### Visualizing the CPU utilization problem
+
+The following Grafana dashboards demonstrate the CPU utilization issue that AutoScaler solves:
+
+#### CPU Utilization vs CPU Quota
+![CPU Utilization](img/cpu-utilization-vs-quota.png)
+*Low CPU utilization (5-15%) despite active workflow processing, leading to incorrect downscaling by compute autoscalers*
+
+#### Worker Instance Count Impact
+![Worker Instances](img/worker-instance-count.png)
+*Worker instance count fluctuations caused by CPU-based autoscaling decisions*
 
 
 ## Scenario: Task List Backlogs
@@ -127,42 +140,50 @@ Key capabilities include:
 
 This approach ensures that polling capacity is always aligned with actual demand, preventing backlogs while maintaining efficient resource utilization across all task lists.
 
+### Visualizing task list backlogs
+
+The following dashboard shows how AutoScaler addresses task list imbalances:
+
+#### Decision Scheduled to Start Latency (p95)
+![Decision Latency](img/decision-scheduled-latency.png)
+*High latency indicates task list backlogs that AutoScaler automatically resolves by redistributing pollers*
 
 
 ## Metrics Guide
 
 ### Key metrics to monitor
 
+**Client Dashboards** http://localhost:3000/d/dehkspwgabvuoc/cadence-client
+> **Note**: Make sure to select a Domain in Grafana for the dashboards to display data. The dashboards will be empty until a domain is selected from the dropdown.
+
+
 Monitor these key metrics to understand AutoScaler performance:
+
 
 #### Decision Poller Quota
 - **Description:** Track decision poller count over time
-- **Name:** cadence-concurrency-auto-scaler.poller-quota
-- **Worker Type:** decisionworker
+- **Name:** `cadence_concurrency_auto_scaler_poller_quota_bucket`
+- **WorkerType:** DecisionWorker
 - **Type:** Heatmap
 ![Decision Poller Quota](img/dash-decision-poller-quota.png)
 
 #### Activity Poller Quota
 - **Description:** Track activity poller count over time
-- **Name:** cadence-concurrency-auto-scaler.poller-quota
-- **Worker Type:** activityworker
+- **Name:** `cadence-concurrency-auto-scaler.poller-quota`
+- **WorkerType:** ActivityWorker
 - **Type:** Heatmap
 ![Activity Poller Quota](img/dash-activity-poller-quota.png)
 
 #### Decision Poller Wait Time
 - **Description:** Track decision poller wait time over time
-- **Name:** cadence-concurrency-auto-scaler.poller-wait-time
-- **Worker Type:** decisionworker
+- **Name:** `cadence-concurrency-auto-scaler.poller-wait-time`
+- **WorkerType:** DecisionWorker
 - **Type:** Heatmap
 ![Decision Poller Wait Time](img/dash-decision-poller-wait-time.png)
 
 #### Activity Poller Wait Time
 - **Description:** Track activity poller wait time over time
-- **Name:** cadence-concurrency-auto-scaler.poller-wait-time
-- **Worker Type:** activityworker
+- **Name:** `cadence-concurrency-auto-scaler.poller-wait-time`
+- **WorkerType:** ActivityWorker
 - **Type:** Heatmap
 ![Activity Poller Wait Time](img/dash-activity-poller-wait-time.png)
-
-
-
-
